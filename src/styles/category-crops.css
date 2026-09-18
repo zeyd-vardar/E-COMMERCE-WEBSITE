@@ -1,0 +1,30 @@
+.catalog-image img {
+  transform: scale(2);
+}
+.catalog-card:hover .catalog-image img {
+  transform: scale(2.05);
+}
+.catalog-image img[src^='data:image/svg+xml'] {
+  transform: none;
+}
+.catalog-card:hover .catalog-image img[src^='data:image/svg+xml'] {
+  transform: scale(1.02);
+}
+.catalog-view .site-header {
+  transform: translateY(0);
+  transition:
+    transform 0.42s var(--ease),
+    background 0.35s,
+    color 0.35s,
+    box-shadow 0.35s;
+}
+.catalog-view .category-nav {
+  transform: translateY(0);
+  transition: transform 0.42s var(--ease);
+}
+.catalog-view .site-header.scroll-hidden {
+  transform: translateY(-101%);
+}
+.catalog-view .category-nav.scroll-hidden {
+  transform: translateY(calc(-1 * (var(--header-h) + var(--category-nav-h))));
+}

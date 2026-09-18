@@ -1,0 +1,327 @@
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+#app > main,
+#app > .category-page,
+#app > .product-page,
+#app > .compare-page,
+#app > .product-not-found {
+  flex: 1;
+}
+.site-footer {
+  position: relative;
+  background: #1d1d1b;
+  color: #f1efe9;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: clamp(70px, 8vw, 120px) var(--pad) 0;
+  margin-top: auto;
+}
+.footer-main {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.55fr) minmax(0, 2fr);
+  gap: clamp(50px, 7vw, 120px);
+  max-width: 1600px;
+  margin: auto;
+}
+.footer-brand {
+  align-self: start;
+  font: 400 clamp(28px, 3vw, 48px)/1 'Manrope';
+  letter-spacing: 0.28em;
+}
+.footer-columns {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1.35fr;
+  gap: clamp(30px, 5vw, 85px);
+}
+.footer-section h2,
+.footer-contact h2 {
+  font-size: 10px;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  margin: 0 0 24px;
+  color: #aaa69e;
+}
+.footer-section > div,
+.footer-contact > div {
+  display: grid;
+  align-content: start;
+}
+.footer-section a {
+  width: max-content;
+  max-width: 100%;
+  padding: 7px 0;
+  font-size: 13px;
+  color: #e2dfd8;
+  transition:
+    color 0.2s,
+    transform 0.2s;
+}
+.footer-section a:hover {
+  color: white;
+  transform: translateX(3px);
+}
+.footer-contact p {
+  font-size: 12px;
+  line-height: 1.65;
+  margin: 0 0 20px;
+  color: #e2dfd8;
+}
+.footer-contact p > span {
+  display: block;
+  color: #817e77;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.footer-contact a {
+  border-bottom: 1px solid transparent;
+  transition: border 0.2s;
+}
+.footer-contact a:hover {
+  border-color: currentColor;
+}
+.footer-section-toggle {
+  display: none;
+}
+.footer-apps {
+  max-width: 1600px;
+  margin: clamp(60px, 7vw, 100px) auto 0;
+  padding: 34px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-apps > div {
+  display: flex;
+  gap: 9px;
+}
+.footer-apps button {
+  height: 52px;
+  min-width: 165px;
+  padding: 0 17px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.footer-apps button:hover {
+  background: white;
+  color: var(--ink);
+}
+.footer-apps svg {
+  width: 23px;
+  height: 23px;
+}
+.footer-apps span {
+  font-size: 15px;
+  line-height: 1.1;
+}
+.footer-apps small {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 0.03em;
+  margin-bottom: 3px;
+}
+.footer-back {
+  display: grid;
+  place-items: center;
+  padding: 45px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+.back-to-top {
+  border: 0;
+  background: none;
+  color: white;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+}
+.back-to-top span {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.back-to-top svg {
+  transform: rotate(-90deg);
+  transition: transform 0.3s;
+}
+.back-to-top:hover svg {
+  transform: rotate(-90deg) translateX(4px);
+}
+.footer-bottom {
+  max-width: 1600px;
+  margin: auto;
+  min-height: 68px;
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #817e77;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+.footer-bottom div {
+  display: flex;
+  gap: 22px;
+}
+.footer-bottom a:hover {
+  color: white;
+}
+.product-view .site-footer {
+  padding-bottom: 0;
+}
+.footer-brand-logo {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  height: 82px;
+  gap: 16px;
+  letter-spacing: 0;
+}
+.footer-brand-logo::after {
+  content: 'STORE';
+  font:
+    400 clamp(24px, 2.6vw, 42px)/1 'Manrope',
+    sans-serif;
+  letter-spacing: 0.22em;
+}
+.footer-brand-logo img {
+  display: block;
+  width: 82px;
+  height: 82px;
+  flex: 0 0 82px;
+  filter: brightness(0) invert(1);
+}
+@media (max-width: 1000px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+  }
+  .footer-columns {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-contact {
+    grid-column: 1/-1;
+  }
+  .footer-contact > div {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 30px;
+  }
+  .footer-brand {
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 767px) {
+  .site-footer {
+    padding: 60px 20px 0;
+  }
+  .footer-main {
+    gap: 35px;
+  }
+  .footer-brand {
+    font-size: 30px;
+  }
+  .footer-columns {
+    display: block;
+  }
+  .footer-section,
+  .footer-contact {
+    border-top: 1px solid rgba(255, 255, 255, 0.13);
+  }
+  .footer-section h2,
+  .footer-contact h2 {
+    display: none;
+  }
+  .footer-section-toggle {
+    width: 100%;
+    height: 58px;
+    border: 0;
+    background: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .footer-section-toggle i {
+    font-style: normal;
+    font-size: 17px;
+    font-weight: 300;
+  }
+  .footer-section > div,
+  .footer-contact > div {
+    display: none;
+    padding: 0 0 20px;
+  }
+  .footer-section.is-open > div,
+  .footer-contact.is-open > div {
+    display: grid;
+  }
+  .footer-section a {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .footer-contact p {
+    min-height: 44px;
+  }
+  .footer-apps {
+    display: block;
+    margin-top: 45px;
+  }
+  .footer-apps .eyebrow {
+    margin-bottom: 20px;
+  }
+  .footer-apps > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-apps button {
+    min-width: 0;
+    padding: 0 10px;
+  }
+  .footer-apps span {
+    font-size: 12px;
+  }
+  .footer-back {
+    padding: 38px 0;
+  }
+  .footer-bottom {
+    display: block;
+    text-align: center;
+    padding: 24px 0;
+    line-height: 1.6;
+  }
+  .footer-bottom div {
+    justify-content: center;
+    margin-top: 10px;
+  }
+  .product-view .site-footer {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+  .site-footer + .support {
+    bottom: 20px;
+  }
+  .product-view .site-footer + .support {
+    bottom: calc(82px + env(safe-area-inset-bottom));
+  }
+}

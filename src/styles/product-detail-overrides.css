@@ -1,0 +1,13 @@
+.image-viewer img {
+  transform: scale(2);
+  transform-origin: 0% 0%;
+  transition: transform-origin 0.25s var(--ease);
+}
+.detail-main-image > img[src^='data:image/svg+xml'],
+.detail-thumbnails img[src^='data:image/svg+xml'],
+.image-viewer img[src^='data:image/svg+xml'] {
+  transform: none;
+}
+.detail-main-image:hover > img[src^='data:image/svg+xml'] {
+  transform: scale(1.015);
+}
