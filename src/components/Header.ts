@@ -1,3 +1,4 @@
+import { assetPath } from '../utils/assetPath';
 import { icon } from '../utils/icons';
 import type { Currency, Language } from '../types';
 
@@ -8,7 +9,7 @@ export const Header = (language: Language, currency: Currency, cartCount = 0) =>
 ${icon('menu', 24)}
 </button>
   <a class="brand brand-logo-link" href="/" data-home-route aria-label="${language === 'tr' ? 'STORE ana sayfa' : 'STORE home page'}">
-<img class="brand-logo" src="/store-logo.svg" alt="STORE">
+<img class="brand-logo" src="${assetPath('store-logo.svg')}" alt="STORE">
 </a>
   <div class="desktop-search search-shell" id="desktop-search">
 <label class="sr-only" for="search-input">

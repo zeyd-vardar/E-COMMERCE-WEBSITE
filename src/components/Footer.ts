@@ -1,6 +1,7 @@
 import { siteConfig } from '../config/site';
 import { companyInfo } from '../config/company';
 import { footerSections } from '../data/footer';
+import { assetPath } from '../utils/assetPath';
 import { icon } from '../utils/icons';
 import type { Language } from '../types';
 const appleIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
@@ -13,7 +14,7 @@ export const Footer = (language: Language) =>
   `<footer class="site-footer">
 <div class="footer-main">
 <a class="footer-brand footer-brand-logo" href="/" data-home-route aria-label="STORE">
-<img src="/store-logo.svg" alt="STORE">
+<img src="${assetPath('store-logo.svg')}" alt="STORE">
 </a>
 <div class="footer-columns">
 ${footerSections

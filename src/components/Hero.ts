@@ -1,4 +1,5 @@
 import { siteConfig } from '../config/site';
+import { assetPath } from '../utils/assetPath';
 import { icon } from '../utils/icons';
 import type { Language } from '../types';
 export const Hero = (language: Language) => {
@@ -6,7 +7,7 @@ export const Hero = (language: Language) => {
   return `<section class="hero" id="home" aria-labelledby="hero-title">
 <img
   class="hero-image"
-  src="/images/aurea-hero.png"
+  src="${assetPath('images/aurea-hero.png')}"
   alt="${language === 'tr' ? 'Modern taş mimaride yeni sezon STORE koleksiyonunu giyen iki model' : 'Two models wearing the STORE new season collection in modern stone architecture'}"
   fetchpriority="high"
   width="1536"

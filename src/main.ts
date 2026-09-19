@@ -637,142 +637,6 @@ function bindEvents() {
   };
 }
 
-function initHomeSectionScroll() {
-  if (!document.body.classList.contains('home-view')) return () => {};
-  const sections = [
-    ...document.querySelectorAll<HTMLElement>(
-      'main > .hero, main > .campaign-section, main > .gender-campaign',
-    ),
-  ];
-  const footer = document.querySelector<HTMLElement>('.site-footer');
-  const targets = footer ? [...sections, footer] : sections;
-  if (sections.length < 2) return () => {};
-
-  let animating = false;
-  let inputArmed = true;
-  let animationFrame = 0;
-  let lastWheelAt = 0;
-  let lastWheelMagnitude = 0;
-  let touchStartY: number | null = null;
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const targetTop = (element: HTMLElement) => element.getBoundingClientRect().top + scrollY;
-  const nearestIndex = () => {
-    let nearest = 0;
-    let distance = Number.POSITIVE_INFINITY;
-    targets.forEach((target, index) => {
-      const nextDistance = Math.abs(targetTop(target) - scrollY);
-      if (nextDistance < distance) {
-        nearest = index;
-        distance = nextDistance;
-      }
-    });
-    return nearest;
-  };
-  const animateTo = (index: number) => {
-    if (animating || index < 0 || index >= targets.length) return;
-    const from = scrollY;
-    const to = targetTop(targets[index]);
-    if (Math.abs(to - from) < 2) return;
-    animating = true;
-    inputArmed = false;
-    const startedAt = performance.now();
-    const duration = reducedMotion ? 80 : 200;
-    const ease = (progress: number) =>
-      progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-    const step = (now: number) => {
-      const progress = Math.min((now - startedAt) / duration, 1);
-      scrollTo({ top: from + (to - from) * ease(progress), behavior: 'auto' });
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(step);
-      } else {
-        animating = false;
-      }
-    };
-    animationFrame = requestAnimationFrame(step);
-  };
-  const move = (direction: 1 | -1) => {
-    const current = nearestIndex();
-    const footerTop = footer ? targetTop(footer) : Number.POSITIVE_INFINITY;
-    if (footer && scrollY >= footerTop + 2) {
-      if (direction > 0 || scrollY > footerTop + 24) return false;
-    }
-    const next = current + direction;
-    if (next < 0 || next >= targets.length) return false;
-    animateTo(next);
-    return true;
-  };
-  const onWheel = (event: WheelEvent) => {
-    if (
-      event.ctrlKey ||
-      document.body.classList.contains('menu-open') ||
-      document.querySelector('.mega-menu.is-open')
-    )
-      return;
-    const footerTop = footer ? targetTop(footer) : Number.POSITIVE_INFINITY;
-    if (footer && scrollY > footerTop + 24 && event.deltaY > 0) return;
-    event.preventDefault();
-    const now = performance.now();
-    const magnitude = Math.abs(event.deltaY);
-    const isFreshGesture =
-      now - lastWheelAt > 90 ||
-      (magnitude > 18 && magnitude > Math.max(lastWheelMagnitude * 2.2, 18));
-    lastWheelAt = now;
-    lastWheelMagnitude = magnitude;
-    if (animating || magnitude < 4) return;
-    if (!inputArmed && !isFreshGesture) return;
-    inputArmed = true;
-    inputArmed = false;
-    move(event.deltaY > 0 ? 1 : -1);
-  };
-  const onTouchStart = (event: TouchEvent) => {
-    if (
-      document.body.classList.contains('menu-open') ||
-      document.querySelector('.mega-menu.is-open')
-    )
-      return;
-    touchStartY = event.touches[0]?.clientY ?? null;
-  };
-  const onTouchMove = (event: TouchEvent) => {
-    if (touchStartY !== null && !document.body.classList.contains('menu-open'))
-      event.preventDefault();
-  };
-  const onTouchEnd = (event: TouchEvent) => {
-    if (touchStartY === null || animating) return;
-    const endY = event.changedTouches[0]?.clientY ?? touchStartY;
-    const delta = touchStartY - endY;
-    touchStartY = null;
-    if (Math.abs(delta) < 42) return;
-    move(delta > 0 ? 1 : -1);
-  };
-  const onKeyDown = (event: KeyboardEvent) => {
-    const element = event.target as HTMLElement | null;
-    if (element?.matches('input, textarea, select, button, [contenteditable="true"]')) return;
-    const direction =
-      event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' '
-        ? 1
-        : event.key === 'ArrowUp' || event.key === 'PageUp'
-          ? -1
-          : 0;
-    if (!direction) return;
-    event.preventDefault();
-    if (!event.repeat && !animating) move(direction);
-  };
-
-  addEventListener('wheel', onWheel, { passive: false });
-  addEventListener('touchstart', onTouchStart, { passive: true });
-  addEventListener('touchmove', onTouchMove, { passive: false });
-  addEventListener('touchend', onTouchEnd, { passive: true });
-  addEventListener('keydown', onKeyDown);
-  return () => {
-    removeEventListener('wheel', onWheel);
-    removeEventListener('touchstart', onTouchStart);
-    removeEventListener('touchmove', onTouchMove);
-    removeEventListener('touchend', onTouchEnd);
-    removeEventListener('keydown', onKeyDown);
-    cancelAnimationFrame(animationFrame);
-  };
-}
 function observeReveals() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
@@ -790,5 +654,162 @@ function observeReveals() {
   );
   document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 }
+
+function initHomeSectionScroll() {
+  if (!document.body.classList.contains('home-view')) return () => {};
+
+  const sections = [
+    ...document.querySelectorAll<HTMLElement>(
+      'main > .hero, main > .campaign-section, main > .gender-campaign',
+    ),
+  ];
+  const footer = document.querySelector<HTMLElement>('.site-footer');
+  const targets = footer ? [...sections, footer] : sections;
+  if (sections.length < 2) return () => {};
+
+  let animating = false;
+  let touchStartY: number | null = null;
+  let gestureLock = false;
+  let wheelGestureActive = false;
+  let wheelReleaseTimer = 0;
+  let trackpadPeakDelta = 0;
+  let lastTrackpadDelta = 0;
+
+  const targetTop = (element: HTMLElement) => element.getBoundingClientRect().top + scrollY;
+
+  const nearestIndex = () => {
+    let nearest = 0;
+    let distance = Number.POSITIVE_INFINITY;
+    targets.forEach((target, index) => {
+      const nextDistance = Math.abs(targetTop(target) - scrollY);
+      if (nextDistance < distance) {
+        nearest = index;
+        distance = nextDistance;
+      }
+    });
+    return nearest;
+  };
+
+  const animateTo = (index: number) => {
+    if (animating || index < 0 || index >= targets.length) return;
+    const to = targetTop(targets[index]);
+    if (Math.abs(to - scrollY) < 2) return;
+    animating = true;
+    window.scrollTo({ top: to, behavior: 'auto' });
+    animating = false;
+    gestureLock = false;
+  };
+
+  const move = (direction: 1 | -1) => {
+    if (gestureLock) return false;
+    const current = nearestIndex();
+    const next = current + direction;
+    if (next < 0 || next >= targets.length) return false;
+    gestureLock = true;
+    animateTo(next);
+    return true;
+  };
+
+  const onWheel = (event: WheelEvent) => {
+    if (
+      event.ctrlKey ||
+      document.body.classList.contains('menu-open') ||
+      document.querySelector('.mega-menu.is-open')
+    )
+      return;
+
+    if (Math.abs(event.deltaY) < 1) return;
+
+    event.preventDefault();
+    const isDiscreteWheel = event.deltaMode === WheelEvent.DOM_DELTA_LINE;
+    const delta = Math.abs(event.deltaY);
+
+    if (isDiscreteWheel) {
+      if (!animating && !gestureLock) move(event.deltaY > 0 ? 1 : -1);
+      return;
+    }
+
+    // A new trackpad swipe normally produces a sharp increase after the
+    // previous gesture's momentum has slowed down. This re-arms the control
+    // without requiring pointer movement, while continued momentum remains
+    // locked to its original section.
+    const isNewSwipeDuringMomentum =
+      wheelGestureActive &&
+      lastTrackpadDelta <= trackpadPeakDelta * 0.45 &&
+      delta > Math.max(lastTrackpadDelta * 1.7, 4);
+
+    window.clearTimeout(wheelReleaseTimer);
+    wheelReleaseTimer = window.setTimeout(() => {
+      wheelGestureActive = false;
+      trackpadPeakDelta = 0;
+      lastTrackpadDelta = 0;
+    }, 50);
+
+    if (isNewSwipeDuringMomentum) {
+      wheelGestureActive = false;
+      trackpadPeakDelta = 0;
+    }
+
+    lastTrackpadDelta = delta;
+    trackpadPeakDelta = Math.max(trackpadPeakDelta, delta);
+    if (animating || gestureLock || wheelGestureActive) return;
+
+    wheelGestureActive = true;
+    move(event.deltaY > 0 ? 1 : -1);
+  };
+
+  const onTouchStart = (event: TouchEvent) => {
+    if (
+      document.body.classList.contains('menu-open') ||
+      document.querySelector('.mega-menu.is-open')
+    )
+      return;
+    touchStartY = event.touches[0]?.clientY ?? null;
+  };
+
+  const onTouchMove = (event: TouchEvent) => {
+    if (touchStartY !== null && !document.body.classList.contains('menu-open'))
+      event.preventDefault();
+  };
+
+  const onTouchEnd = (event: TouchEvent) => {
+    if (touchStartY === null || animating) return;
+    const endY = event.changedTouches[0]?.clientY ?? touchStartY;
+    const delta = touchStartY - endY;
+    touchStartY = null;
+    if (Math.abs(delta) < 24) return;
+    move(delta > 0 ? 1 : -1);
+  };
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    const element = event.target as HTMLElement | null;
+    if (element?.matches('input, textarea, select, button, [contenteditable="true"]')) return;
+    const direction =
+      event.key === 'ArrowDown' || event.key === 'PageDown' || event.key === ' '
+        ? 1
+        : event.key === 'ArrowUp' || event.key === 'PageUp'
+          ? -1
+          : 0;
+    if (!direction || animating) return;
+    event.preventDefault();
+    move(direction);
+  };
+
+  addEventListener('wheel', onWheel, { passive: false });
+  addEventListener('touchstart', onTouchStart, { passive: true });
+  addEventListener('touchmove', onTouchMove, { passive: false });
+  addEventListener('touchend', onTouchEnd, { passive: true });
+  addEventListener('keydown', onKeyDown);
+
+  return () => {
+    removeEventListener('wheel', onWheel);
+    removeEventListener('touchstart', onTouchStart);
+    removeEventListener('touchmove', onTouchMove);
+    removeEventListener('touchend', onTouchEnd);
+    removeEventListener('keydown', onKeyDown);
+    clearTimeout(wheelReleaseTimer);
+  };
+}
+
 render();
 addEventListener('popstate', () => render());

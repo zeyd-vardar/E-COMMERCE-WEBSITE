@@ -430,6 +430,11 @@ select:focus-visible {
   height: 1px;
   background: currentColor;
 }
+/* Keep the hero navigation elements in the markup without showing them. */
+body.home-view .scroll-cue,
+body.home-view .hero-index {
+  display: none;
+}
 .sidebar-overlay {
   position: fixed;
   inset: 0;
@@ -1001,6 +1006,24 @@ body.home-view .sidebar-actions a {
     max-width: 290px;
   }
 }
+/* Full-page home story: each wheel/touch gesture settles on the next campaign image. */
+html:has(body.home-view) {
+  scroll-snap-type: none;
+  scroll-padding-top: 0;
+}
+body.home-view main > .hero,
+body.home-view main > .campaign-section,
+body.home-view main > .gender-campaign {
+  height: 100svh;
+  min-height: 100svh;
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+  touch-action: pan-x;
+}
+body.home-view .site-footer {
+  scroll-snap-align: none;
+  scroll-snap-stop: normal;
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -1019,27 +1042,6 @@ body.home-view .sidebar-actions a {
     opacity: 1;
     transform: none;
   }
-}
-
-/* Full-page home story: each wheel/touch gesture settles on the next campaign image. */
-html:has(body.home-view) {
-  scroll-snap-type: y mandatory;
-  scroll-padding-top: 0;
-}
-body.home-view main > .hero,
-body.home-view main > .campaign-section,
-body.home-view main > .gender-campaign {
-  height: 100svh;
-  min-height: 100svh;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  touch-action: pan-x;
-}
-body.home-view .site-footer {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-@media (prefers-reduced-motion: reduce) {
   html:has(body.home-view) {
     scroll-snap-type: y proximity;
   }

@@ -1,6 +1,7 @@
 import { secondaryMenu } from '../data/menu';
 import { categoryTree } from '../data/categories';
 import { categoryHref, categoryPath } from '../utils/categoryRoutes';
+import { assetPath } from '../utils/assetPath';
 import { icon } from '../utils/icons';
 import type { CategoryNode, Currency, Language } from '../types';
 
@@ -36,7 +37,7 @@ export const Sidebar = (language: Language, currency: Currency) =>
 <aside class="sidebar" id="sidebar" aria-hidden="true" aria-label="${language === 'tr' ? 'Ana menü' : 'Main menu'}">
 <div class="sidebar-head">
 <a class="brand sidebar-brand-logo" href="/" data-home-route aria-label="STORE">
-<img src="/store-logo.svg" alt="STORE">
+<img src="${assetPath('store-logo.svg')}" alt="STORE">
 </a>
 <button class="icon-btn sidebar-close" aria-label="${language === 'tr' ? 'Menüyü kapat' : 'Close menu'}">
 ${icon('x', 24)}
