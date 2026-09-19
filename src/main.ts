@@ -677,7 +677,7 @@ function initHomeSectionScroll() {
   let gestureLock = false;
   let wheelGestureActive = false;
   let wheelReleaseTimer = 0;
-  let navigationTimer = 0;
+  let scrollAnimationFrame = 0;
   let trackpadPeakDelta = 0;
   let lastTrackpadDelta = 0;
 
@@ -705,15 +705,32 @@ function initHomeSectionScroll() {
     }
     animating = true;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({ top: to, behavior: reduceMotion ? 'auto' : 'smooth' });
-    window.clearTimeout(navigationTimer);
-    navigationTimer = window.setTimeout(
-      () => {
+    if (reduceMotion) {
+      window.scrollTo(0, to);
+      animating = false;
+      gestureLock = false;
+      return;
+    }
+
+    const start = window.scrollY;
+    const distance = to - start;
+    const duration = 700;
+    let startedAt: number | undefined;
+    const step = (timestamp: number) => {
+      startedAt ??= timestamp;
+      const progress = Math.min((timestamp - startedAt) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      window.scrollTo(0, start + distance * eased);
+
+      if (progress < 1) {
+        scrollAnimationFrame = requestAnimationFrame(step);
+      } else {
+        scrollAnimationFrame = 0;
         animating = false;
         gestureLock = false;
-      },
-      reduceMotion ? 0 : 700,
-    );
+      }
+    };
+    scrollAnimationFrame = requestAnimationFrame(step);
   };
 
   const move = (direction: 1 | -1) => {
@@ -824,7 +841,7 @@ function initHomeSectionScroll() {
     removeEventListener('touchend', onTouchEnd);
     removeEventListener('keydown', onKeyDown);
     clearTimeout(wheelReleaseTimer);
-    clearTimeout(navigationTimer);
+    cancelAnimationFrame(scrollAnimationFrame);
   };
 }
 
