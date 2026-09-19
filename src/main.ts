@@ -678,6 +678,7 @@ function initHomeSectionScroll() {
   let wheelGestureActive = false;
   let wheelReleaseTimer = 0;
   let scrollAnimationFrame = 0;
+  let restoreScrollSettings = () => {};
   let trackpadPeakDelta = 0;
   let lastTrackpadDelta = 0;
 
@@ -714,18 +715,29 @@ function initHomeSectionScroll() {
 
     const start = window.scrollY;
     const distance = to - start;
-    const duration = 700;
+    const duration = 600;
+    const root = document.documentElement;
+    const previousScrollBehavior = root.style.scrollBehavior;
+    const previousScrollSnapType = root.style.scrollSnapType;
+    root.style.scrollBehavior = 'auto';
+    root.style.scrollSnapType = 'none';
+    restoreScrollSettings = () => {
+      root.style.scrollBehavior = previousScrollBehavior;
+      root.style.scrollSnapType = previousScrollSnapType;
+    };
     let startedAt: number | undefined;
     const step = (timestamp: number) => {
       startedAt ??= timestamp;
       const progress = Math.min((timestamp - startedAt) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 4);
+      const eased =
+        progress < 0.5 ? 4 * Math.pow(progress, 3) : 1 - Math.pow(-2 * progress + 2, 3) / 2;
       window.scrollTo(0, start + distance * eased);
 
       if (progress < 1) {
         scrollAnimationFrame = requestAnimationFrame(step);
       } else {
         scrollAnimationFrame = 0;
+        restoreScrollSettings();
         animating = false;
         gestureLock = false;
       }
@@ -842,6 +854,7 @@ function initHomeSectionScroll() {
     removeEventListener('keydown', onKeyDown);
     clearTimeout(wheelReleaseTimer);
     cancelAnimationFrame(scrollAnimationFrame);
+    restoreScrollSettings();
   };
 }
 
