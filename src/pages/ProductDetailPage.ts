@@ -13,11 +13,12 @@ import { favoritesService } from '../services/favoritesService';
 import { comparisonService } from '../services/comparisonService';
 import { recentlyViewedService } from '../services/recentlyViewedService';
 import type { CatalogProduct, Currency, Language } from '../types';
+import { currentRoute } from '../utils/router';
 let selectedImage = 0,
   selectedColor = '',
   selectedSize = '',
   quantity = 1;
-const slug = () => location.pathname.split('/').filter(Boolean).at(-1) ?? '';
+const slug = () => currentRoute().split('/').filter(Boolean).at(-1) ?? '';
 export const getProductBySlug = (value: string) => catalogProducts.find((p) => p.slug === value);
 const colorHex: Record<string, string> = {
   Siyah: '#242321',

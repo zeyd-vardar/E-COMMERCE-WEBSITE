@@ -21,6 +21,7 @@ import { userService } from './services/userService';
 import { categoryTree } from './data/categories';
 import type { CategoryNode } from './types';
 import { initCatalogGalleries } from './utils/catalogGallery';
+import { appRoute, currentRoute } from './utils/router';
 
 const app = document.querySelector<HTMLDivElement>('#app');
 if (!app) throw new Error('Application root was not found.');
@@ -34,12 +35,13 @@ const render = () => {
   document.documentElement.lang = language;
   document.body.classList.remove('menu-open', 'mega-menu-open');
   cartService.prune(new Set(catalogProducts.map((product) => product.id)));
-  const isCategory = location.pathname.startsWith('/category/');
-  const isCompare = location.pathname === '/compare';
-  const isProduct = location.pathname.startsWith('/product/');
+  const route = currentRoute();
+  const isCategory = route.startsWith('/category/');
+  const isCompare = route === '/compare';
+  const isProduct = route.startsWith('/product/');
   const isAccount =
-    location.pathname.startsWith('/account') ||
-    ['/cart', '/checkout', '/favorites', '/tracking'].includes(location.pathname);
+    route.startsWith('/account') ||
+    ['/cart', '/checkout', '/favorites', '/tracking'].includes(route);
   if (!isProduct) document.title = 'STORE | Modern Essentials';
   const content = isCategory
     ? CategoryPage(language, currency)
@@ -52,11 +54,11 @@ const render = () => {
           : `<main>
 ${Hero(language)}${Products(language, currency)}
 </main>`;
-  document.body.classList.toggle('home-view', location.pathname === '/');
+  document.body.classList.toggle('home-view', route === '/');
   document.body.classList.toggle('catalog-view', isCategory || isCompare || isProduct || isAccount);
   document.body.classList.toggle('product-view', isProduct);
   document.body.classList.toggle('account-view', isAccount);
-  const routeSegments = location.pathname.split('/').filter(Boolean);
+  const routeSegments = route.split('/').filter(Boolean);
   const activeCategorySlug = routeSegments[0] === 'category' ? (routeSegments[1] ?? null) : null;
   app.innerHTML = `${Header(language, currency, cartService.count())}${Sidebar(language, currency)}${content}${Footer(language)}${LiveSupport(language)}${Toast()}`;
   document.querySelectorAll<HTMLElement>('[data-mega-trigger]').forEach((trigger) => {
@@ -202,7 +204,7 @@ ${Hero(language)}${Products(language, currency)}
   }
 };
 const navigate = (path: string) => {
-  history.pushState({}, '', path);
+  history.pushState({}, '', appRoute(path));
   if (path.startsWith('/category/')) resetCategoryState();
   if (path.startsWith('/product/')) resetProductState();
   render();
@@ -467,9 +469,7 @@ function bindEvents() {
     }),
   );
   if (document.body.classList.contains('product-view') && notifyDialogGlobal) {
-    const product = catalogProducts.find(
-      (item) => item.slug === location.pathname.split('/').at(-1),
-    );
+    const product = catalogProducts.find((item) => item.slug === currentRoute().split('/').at(-1));
     if (product) notifyDialogGlobal.dataset.productId = product.id;
   }
   notifyDialogGlobal?.querySelector('form')?.addEventListener('submit', () => {

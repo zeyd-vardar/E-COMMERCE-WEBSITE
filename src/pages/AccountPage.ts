@@ -9,7 +9,8 @@ import { addressService } from '../services/addressService';
 import { stockWatchService } from '../services/stockWatchService';
 import { userService } from '../services/userService';
 import type { Currency, Language } from '../types';
-const route = () => location.pathname;
+import { currentRoute } from '../utils/router';
+const route = () => currentRoute();
 const labels = {
   tr: {
     title: 'Profilim',

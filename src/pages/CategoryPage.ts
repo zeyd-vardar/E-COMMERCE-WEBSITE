@@ -11,12 +11,13 @@ import { cartService } from '../services/cartService';
 import { favoritesService } from '../services/favoritesService';
 import { comparisonService } from '../services/comparisonService';
 import type { Currency, Language, SortOption } from '../types';
+import { currentRoute } from '../utils/router';
 const BATCH = 12;
 let visible = BATCH;
 let activeFilters = new Map<string, Set<string>>();
 let observer: IntersectionObserver | undefined;
-const currentSlug = () => location.pathname.split('/').filter(Boolean).at(-1) ?? 'all';
-const currentSegments = () => location.pathname.split('/').filter(Boolean).slice(1);
+const currentSlug = () => currentRoute().split('/').filter(Boolean).at(-1) ?? 'all';
+const currentSegments = () => currentRoute().split('/').filter(Boolean).slice(1);
 const currentSort = (): SortOption =>
   (new URLSearchParams(location.search).get('sort') as SortOption) ?? 'recommended';
 const listFor = (language: Language) =>
@@ -25,7 +26,7 @@ const listFor = (language: Language) =>
       productsForCategory(
         catalogProducts,
         currentSlug(),
-        location.pathname.split('/').filter(Boolean).slice(1),
+        currentRoute().split('/').filter(Boolean).slice(1),
       ),
       activeFilters,
     ),
