@@ -672,6 +672,7 @@ function initHomeSectionScroll() {
   let gestureLock = false;
   let wheelGestureActive = false;
   let wheelReleaseTimer = 0;
+  let navigationTimer = 0;
   let trackpadPeakDelta = 0;
   let lastTrackpadDelta = 0;
 
@@ -693,11 +694,21 @@ function initHomeSectionScroll() {
   const animateTo = (index: number) => {
     if (animating || index < 0 || index >= targets.length) return;
     const to = targetTop(targets[index]);
-    if (Math.abs(to - scrollY) < 2) return;
+    if (Math.abs(to - scrollY) < 2) {
+      gestureLock = false;
+      return;
+    }
     animating = true;
-    window.scrollTo({ top: to, behavior: 'auto' });
-    animating = false;
-    gestureLock = false;
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: to, behavior: reduceMotion ? 'auto' : 'smooth' });
+    window.clearTimeout(navigationTimer);
+    navigationTimer = window.setTimeout(
+      () => {
+        animating = false;
+        gestureLock = false;
+      },
+      reduceMotion ? 0 : 700,
+    );
   };
 
   const move = (direction: 1 | -1) => {
@@ -743,7 +754,7 @@ function initHomeSectionScroll() {
       wheelGestureActive = false;
       trackpadPeakDelta = 0;
       lastTrackpadDelta = 0;
-    }, 50);
+    }, 120);
 
     if (isNewSwipeDuringMomentum) {
       wheelGestureActive = false;
@@ -808,6 +819,7 @@ function initHomeSectionScroll() {
     removeEventListener('touchend', onTouchEnd);
     removeEventListener('keydown', onKeyDown);
     clearTimeout(wheelReleaseTimer);
+    clearTimeout(navigationTimer);
   };
 }
 
