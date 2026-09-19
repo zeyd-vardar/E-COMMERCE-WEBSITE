@@ -31,6 +31,11 @@ let sidebarTimer = 0;
 let lastScrollPosition = 0;
 let homeSectionScrollCleanup = () => {};
 
+const redirectedRoute = new URLSearchParams(location.search).get('redirect');
+if (redirectedRoute?.startsWith('/') && !redirectedRoute.startsWith('//')) {
+  history.replaceState({}, '', appRoute(redirectedRoute));
+}
+
 const render = () => {
   document.documentElement.lang = language;
   document.body.classList.remove('menu-open', 'mega-menu-open');
