@@ -91,7 +91,7 @@ ${node.name[language]}
 </h2>
 </div>
 <a ${routeAttributes([node.slug], 'cta')}>
-${language === 'tr' ? `Tüm ${node.name.tr} Ürünlerini Gör` : `View All ${node.name.en}`} →</a>
+${language === 'tr' ? 'Tümünü Gör' : `View All ${node.name.en}`} →</a>
 </header>
 <div class="mega-columns">
 ${(node.children ?? []).map((child) => column(child, node, language)).join('')}
