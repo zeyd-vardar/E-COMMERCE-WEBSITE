@@ -35,7 +35,6 @@ src/
     │   ├── events/      Tıklama ve form olayları
     │   └── services/    Frontend iş akışları ve veri eşitleme
     ├── auth/api/        Kayıt, giriş ve çıkış işlemleri
-    ├── catalog/api/     Ürün sorguları
     └── navigation/events/
                          Kullanıcı menüsü yönlendirme olayları
 ```

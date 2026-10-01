@@ -2,10 +2,10 @@ import { categoryTree } from '../data/categories';
 import type { CatalogProduct, CategoryNode } from '../types';
 import { createPlaceholderSvg } from '../utils/placeholderImage';
 
-export const PRODUCTS_PER_LEAF_CATEGORY = 10;
+const PRODUCTS_PER_LEAF_CATEGORY = 10;
 type Leaf = { node: CategoryNode; path: CategoryNode[] };
 const productRoots = new Set(['women', 'men', 'kids', 'accessories']);
-export const getProductLeafCategories = (
+const getProductLeafCategories = (
   nodes = categoryTree,
   path: CategoryNode[] = [],
 ): Leaf[] =>
@@ -74,7 +74,7 @@ const ranges: Record<string, [number, number]> = {
 const brands = ['STORE', 'FORM', 'MODE', 'LINE'];
 const stocks = [12, 5, 0, 18, 2, 9, 0, 3, 14, 7];
 const discounts = [0, 10, 0, 20, 0, 30, 0, 15, 0, 25];
-export const generateDemoCatalog = (): CatalogProduct[] =>
+const generateDemoCatalog = (): CatalogProduct[] =>
   getProductLeafCategories().flatMap(({ node, path }, leafIndex) =>
     Array.from({ length: PRODUCTS_PER_LEAF_CATEGORY }, (_, offset) => {
       const index = offset + 1,
@@ -153,11 +153,3 @@ export const generateDemoCatalog = (): CatalogProduct[] =>
     }),
   );
 export const generatedProducts = generateDemoCatalog();
-export const validateDemoCatalogCoverage = () =>
-  getProductLeafCategories().every(
-    ({ path }) =>
-      generatedProducts.filter(
-        (product) =>
-          product.categoryPath?.join('/') === path.map((x) => x.slug).join('/'),
-      ).length >= PRODUCTS_PER_LEAF_CATEGORY,
-  );

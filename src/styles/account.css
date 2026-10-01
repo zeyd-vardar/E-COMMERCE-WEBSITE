@@ -210,7 +210,7 @@
   border: 1px solid var(--line);
   padding: 25px;
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
 }
 .order-row small,
@@ -234,12 +234,6 @@
 .order-row > div:nth-child(2) > span {
   font-size: 9px;
   letter-spacing: 0.1em;
-}
-.order-row > button {
-  border: 0;
-  background: none;
-  margin-left: 35px;
-  font-size: 9px;
 }
 .message-row {
   display: block;
@@ -876,11 +870,6 @@
   .order-row {
     grid-template-columns: 1fr auto;
     padding: 18px;
-  }
-  .order-row > button {
-    grid-column: 1/-1;
-    text-align: left;
-    margin: 15px 0 0;
   }
   .account-product-list > a strong,
   .account-product-list > div strong {

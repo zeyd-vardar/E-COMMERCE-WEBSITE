@@ -286,8 +286,6 @@ ${o.itemCount} ${language === 'tr' ? 'ürün' : 'items'}
 ${formatCurrency(o.total, currency, language)}
 </strong>
 </div>
-<button data-demo-action>
-${language === 'tr' ? 'DETAYLAR' : 'DETAILS'} →</button>
 </article>`,
   )
   .join('')}
@@ -888,15 +886,4 @@ export const initAccountPage = (
           : 'Order status updated.',
       );
     });
-  document
-    .querySelectorAll('[data-demo-action]')
-    .forEach((btn) =>
-      btn.addEventListener('click', () =>
-        toast(
-          language === 'tr'
-            ? 'Sipariş detayları görüntüleniyor.'
-            : 'Order details are displayed.',
-        ),
-      ),
-    );
 };
