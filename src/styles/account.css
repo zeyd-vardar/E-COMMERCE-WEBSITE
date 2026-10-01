@@ -1,6 +1,8 @@
 .account-page {
-  padding: calc(var(--header-h) + var(--category-nav-h) + clamp(55px, 7vw, 100px)) var(--pad)
-    clamp(100px, 10vw, 160px);
+  padding: calc(
+      var(--header-h) + var(--category-nav-h) + clamp(55px, 7vw, 100px)
+    )
+    var(--pad) clamp(100px, 10vw, 160px);
   max-width: 1550px;
   margin: auto;
   width: 100%;

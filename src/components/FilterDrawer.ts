@@ -90,8 +90,12 @@ export const FilterDrawer = (
         return language === 'tr' ? 'Stokta yok' : 'Out of stock';
       },
     ),
-    checks('discount', language === 'tr' ? 'İndirim' : 'Discount', ['discounted'], active, () =>
-      language === 'tr' ? 'İndirimli ürünler' : 'On sale',
+    checks(
+      'discount',
+      language === 'tr' ? 'İndirim' : 'Discount',
+      ['discounted'],
+      active,
+      () => (language === 'tr' ? 'İndirimli ürünler' : 'On sale'),
     ),
   ].join('');
 

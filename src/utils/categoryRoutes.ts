@@ -1,7 +1,12 @@
 import type { CategoryNode } from '../types';
-export const categoryPath = (segments: string[]) => segments.filter(Boolean).join('/');
-export const categoryHref = (segments: string[]) => `/category/${categoryPath(segments)}`;
-export const resolveCategoryPath = (tree: CategoryNode[], segments: string[]) => {
+export const categoryPath = (segments: string[]) =>
+  segments.filter(Boolean).join('/');
+export const categoryHref = (segments: string[]) =>
+  `/category/${categoryPath(segments)}`;
+export const resolveCategoryPath = (
+  tree: CategoryNode[],
+  segments: string[],
+) => {
   const nodes: CategoryNode[] = [];
   let level = tree;
   for (const slug of segments) {

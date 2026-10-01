@@ -31,11 +31,18 @@ const read = (): Address[] => storage.getJson(KEY, initialAddresses);
 const save = (items: Address[]) => storage.setJson(KEY, items);
 export const addressService = {
   all: read,
+  replace(items: Address[]) {
+    save(items);
+  },
   add(item: Address) {
     const items = read(),
       index = items.findIndex((address) => address.id === item.id);
     if (index >= 0) {
-      items[index] = { ...items[index], ...item, isDefault: items[index].isDefault };
+      items[index] = {
+        ...items[index],
+        ...item,
+        isDefault: items[index].isDefault,
+      };
     } else {
       items.push(item);
     }

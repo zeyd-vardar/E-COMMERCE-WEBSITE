@@ -27,7 +27,8 @@ const paths: Record<IconName, string> = {
   user: `<circle cx="12" cy="8" r="4"/>
 <path d="M4 21a8 8 0 0 1 16 0"/>`,
   chevron: '<path d="m9 18 6-6-6-6"/>',
-  message: '<path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/>',
+  message:
+    '<path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/>',
   arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
   send: `<path d="m22 2-7 20-4-9-9-4Z"/>
 <path d="M22 2 11 13"/>`,

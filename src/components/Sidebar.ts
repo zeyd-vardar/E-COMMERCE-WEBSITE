@@ -5,7 +5,12 @@ import { assetPath } from '../utils/assetPath';
 import { icon } from '../utils/icons';
 import type { CategoryNode, Currency, Language } from '../types';
 
-const nested = (nodes: CategoryNode[], language: Language, path: string[], depth = 0): string =>
+const nested = (
+  nodes: CategoryNode[],
+  language: Language,
+  path: string[],
+  depth = 0,
+): string =>
   nodes
     .map((node) => {
       const segments = [...path, node.slug];

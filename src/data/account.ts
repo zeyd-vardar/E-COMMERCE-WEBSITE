@@ -22,7 +22,10 @@ export const orders: Order[] = [
 export const messages: AccountMessage[] = [
   {
     id: 'm1',
-    subject: { tr: 'Siparişiniz kargoya verildi', en: 'Your order has shipped' },
+    subject: {
+      tr: 'Siparişiniz kargoya verildi',
+      en: 'Your order has shipped',
+    },
     preview: {
       tr: 'AU-10318 numaralı siparişiniz yola çıktı.',
       en: 'Your order AU-10318 is on its way.',
@@ -33,8 +36,14 @@ export const messages: AccountMessage[] = [
   },
   {
     id: 'm2',
-    subject: { tr: 'İade talebiniz alındı', en: 'Your return request was received' },
-    preview: { tr: 'Talebiniz inceleniyor.', en: 'Your request is being reviewed.' },
+    subject: {
+      tr: 'İade talebiniz alındı',
+      en: 'Your return request was received',
+    },
+    preview: {
+      tr: 'Talebiniz inceleniyor.',
+      en: 'Your request is being reviewed.',
+    },
     createdAt: '2026-08-10',
     isRead: false,
     type: 'return',

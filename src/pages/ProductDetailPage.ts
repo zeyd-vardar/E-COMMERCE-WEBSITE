@@ -19,7 +19,8 @@ let selectedImage = 0,
   selectedSize = '',
   quantity = 1;
 const slug = () => currentRoute().split('/').filter(Boolean).at(-1) ?? '';
-export const getProductBySlug = (value: string) => catalogProducts.find((p) => p.slug === value);
+export const getProductBySlug = (value: string) =>
+  catalogProducts.find((p) => p.slug === value);
 const colorHex: Record<string, string> = {
   Siyah: '#242321',
   Ekru: '#e7dfd0',
@@ -79,7 +80,11 @@ ${
     : ''
 }
 </div>`;
-const ProductInfo = (p: CatalogProduct, language: Language, currency: Currency) =>
+const ProductInfo = (
+  p: CatalogProduct,
+  language: Language,
+  currency: Currency,
+) =>
   `<section class="detail-info">
 <p class="detail-brand">
 ${p.brand}
@@ -463,31 +468,41 @@ export const initProductDetail = (
     const color = activeColor(),
       filter = colorFilter(color),
       suffix = `#variant-${encodeURIComponent(color)}`;
-    document.querySelector<HTMLElement>('.variant-group strong')?.replaceChildren(color);
     document
-      .querySelectorAll<HTMLImageElement>('.detail-gallery img,.image-viewer img')
+      .querySelector<HTMLElement>('.variant-group strong')
+      ?.replaceChildren(color);
+    document
+      .querySelectorAll<HTMLImageElement>(
+        '.detail-gallery img,.image-viewer img',
+      )
       .forEach((image) => {
         image.src = `${p.images[0].split('#')[0]}${suffix}`;
         image.style.filter = filter;
       });
-    document.querySelectorAll<HTMLButtonElement>('[data-color]').forEach((button) => {
-      const active = button.dataset.color === color;
-      button.classList.toggle('is-active', active);
-      button.setAttribute('aria-pressed', String(active));
-    });
-    document.querySelectorAll<HTMLButtonElement>('[data-size]').forEach((button) => {
-      const size = button.dataset.size ?? '',
-        stock = variantStock(p, color, size),
-        active = selectedSize === size;
-      button.disabled = stock === 0;
-      button.classList.toggle('is-active', active);
-      button.setAttribute('aria-pressed', String(active));
-      button.setAttribute(
-        'aria-label',
-        `${language === 'tr' ? 'Beden' : 'Size'} ${size}${stock === 0 ? ` — ${language === 'tr' ? 'stokta yok' : 'out of stock'}` : ''}`,
-      );
-    });
-    const available = selectedSize ? variantStock(p, color, selectedSize) : p.stock;
+    document
+      .querySelectorAll<HTMLButtonElement>('[data-color]')
+      .forEach((button) => {
+        const active = button.dataset.color === color;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+    document
+      .querySelectorAll<HTMLButtonElement>('[data-size]')
+      .forEach((button) => {
+        const size = button.dataset.size ?? '',
+          stock = variantStock(p, color, size),
+          active = selectedSize === size;
+        button.disabled = stock === 0;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+        button.setAttribute(
+          'aria-label',
+          `${language === 'tr' ? 'Beden' : 'Size'} ${size}${stock === 0 ? ` — ${language === 'tr' ? 'stokta yok' : 'out of stock'}` : ''}`,
+        );
+      });
+    const available = selectedSize
+      ? variantStock(p, color, selectedSize)
+      : p.stock;
     const note = document.querySelector<HTMLElement>('.stock-note');
     if (note)
       note.textContent =
@@ -514,14 +529,18 @@ export const initProductDetail = (
     btn.addEventListener('click', () => {
       selectedColor = btn.dataset.color ?? '';
       selectedImage = 0;
-      if (selectedSize && variantStock(p, selectedColor, selectedSize) === 0) selectedSize = '';
+      if (selectedSize && variantStock(p, selectedColor, selectedSize) === 0)
+        selectedSize = '';
       updateVariants();
     }),
   );
   document.querySelectorAll<HTMLButtonElement>('[data-size]').forEach((btn) =>
     btn.addEventListener('click', () => {
       selectedSize = btn.dataset.size ?? '';
-      quantity = Math.min(quantity, variantStock(p, activeColor(), selectedSize));
+      quantity = Math.min(
+        quantity,
+        variantStock(p, activeColor(), selectedSize),
+      );
       updateVariants();
     }),
   );
@@ -533,14 +552,18 @@ export const initProductDetail = (
   );
   document.querySelectorAll('.quantity-plus').forEach((btn) =>
     btn.addEventListener('click', () => {
-      const limit = selectedSize ? variantStock(p, activeColor(), selectedSize) : p.stock;
+      const limit = selectedSize
+        ? variantStock(p, activeColor(), selectedSize)
+        : p.stock;
       quantity = Math.min(limit, quantity + 1);
       rerender();
     }),
   );
   const add = () => {
     if (p.sizes.length && !selectedSize) {
-      toast(language === 'tr' ? 'Lütfen bir beden seçin.' : 'Please select a size.');
+      toast(
+        language === 'tr' ? 'Lütfen bir beden seçin.' : 'Please select a size.',
+      );
       return;
     }
     if (selectedSize && variantStock(p, activeColor(), selectedSize) === 0) {
@@ -552,7 +575,10 @@ export const initProductDetail = (
       return;
     }
     for (let i = 0; i < quantity; i++)
-      cartService.add(p.id, { color: activeColor() || undefined, size: selectedSize || undefined });
+      cartService.add(p.id, {
+        color: activeColor() || undefined,
+        size: selectedSize || undefined,
+      });
     updateBadge();
     toast(
       language === 'tr'
@@ -567,7 +593,9 @@ export const initProductDetail = (
     .querySelectorAll('.detail-notify')
     .forEach((btn) =>
       btn.addEventListener('click', () =>
-        document.querySelector<HTMLDialogElement>('.notify-dialog')?.showModal(),
+        document
+          .querySelector<HTMLDialogElement>('.notify-dialog')
+          ?.showModal(),
       ),
     );
   document.querySelector('.detail-favorite')?.addEventListener('click', () => {
@@ -586,7 +614,11 @@ export const initProductDetail = (
   document.querySelector('.detail-compare')?.addEventListener('click', () => {
     comparisonService.toggle(p.id);
     rerender();
-    toast(language === 'tr' ? 'Karşılaştırma listeniz güncellendi.' : 'Comparison list updated.');
+    toast(
+      language === 'tr'
+        ? 'Karşılaştırma listeniz güncellendi.'
+        : 'Comparison list updated.',
+    );
   });
   document.querySelectorAll('.detail-accordions>div>button').forEach((btn) =>
     btn.addEventListener('click', () => {
@@ -597,8 +629,12 @@ export const initProductDetail = (
     }),
   );
   const guide = document.querySelector<HTMLDialogElement>('.size-guide');
-  document.querySelector('.size-guide-open')?.addEventListener('click', () => guide?.showModal());
-  document.querySelector('.size-guide-close')?.addEventListener('click', () => guide?.close());
+  document
+    .querySelector('.size-guide-open')
+    ?.addEventListener('click', () => guide?.showModal());
+  document
+    .querySelector('.size-guide-close')
+    ?.addEventListener('click', () => guide?.close());
   document
     .querySelector('.review-write')
     ?.addEventListener('click', () =>
@@ -609,17 +645,24 @@ export const initProductDetail = (
       ),
     );
   const viewer = document.querySelector<HTMLElement>('.viewer-overlay');
-  const setViewer = (open: boolean) => viewer?.classList.toggle('is-open', open);
-  document.querySelector('.image-viewer-open')?.addEventListener('click', () => setViewer(true));
-  document.querySelector('.viewer-close')?.addEventListener('click', () => setViewer(false));
+  const setViewer = (open: boolean) =>
+    viewer?.classList.toggle('is-open', open);
+  document
+    .querySelector('.image-viewer-open')
+    ?.addEventListener('click', () => setViewer(true));
+  document
+    .querySelector('.viewer-close')
+    ?.addEventListener('click', () => setViewer(false));
   viewer?.addEventListener('click', (e) => {
     if (e.target === viewer) setViewer(false);
   });
-  document.querySelectorAll('.detail-recommendations [data-product-route]').forEach((link) =>
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      resetProductState();
-      navigate(`/product/${(link as HTMLElement).dataset.productRoute}`);
-    }),
-  );
+  document
+    .querySelectorAll('.detail-recommendations [data-product-route]')
+    .forEach((link) =>
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        resetProductState();
+        navigate(`/product/${(link as HTMLElement).dataset.productRoute}`);
+      }),
+    );
 };

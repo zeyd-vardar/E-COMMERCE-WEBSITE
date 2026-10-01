@@ -2,7 +2,11 @@ import { assetPath } from '../utils/assetPath';
 import { icon } from '../utils/icons';
 import type { Currency, Language } from '../types';
 
-export const Header = (language: Language, currency: Currency, cartCount = 0) => `
+export const Header = (
+  language: Language,
+  currency: Currency,
+  cartCount = 0,
+) => `
 <header class="site-header" id="site-header">
  <div class="header-inner">
   <button class="icon-btn menu-trigger" id="menu-trigger" aria-label="${language === 'tr' ? 'Menüyü aç' : 'Open menu'}" aria-expanded="false" aria-controls="sidebar">

@@ -1,9 +1,22 @@
-const palette = ['#E8E4DC', '#DDE5E4', '#E7DDD8', '#E1E5DB', '#E5DFE8', '#E8E1D5'];
+const palette = [
+  '#E8E4DC',
+  '#DDE5E4',
+  '#E7DDD8',
+  '#E1E5DB',
+  '#E5DFE8',
+  '#E8E1D5',
+];
 const escapeXml = (value: string) =>
   value.replace(
     /[<>&'\"]/g,
     (char) =>
-      ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[char] ?? char,
+      ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        "'": '&apos;',
+        '"': '&quot;',
+      })[char] ?? char,
   );
 export const createPlaceholderSvg = (label: string, index: number) => {
   const short = label.length > 28 ? `${label.slice(0, 27)}…` : label;

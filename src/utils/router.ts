@@ -1,5 +1,7 @@
 const basePath =
-  import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL.replace(/\/$/, '');
+  import.meta.env.BASE_URL === '/'
+    ? ''
+    : import.meta.env.BASE_URL.replace(/\/$/, '');
 
 export function currentRoute() {
   const { pathname } = window.location;

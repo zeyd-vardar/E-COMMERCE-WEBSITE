@@ -20,7 +20,13 @@ export interface Address {
   isDefault: boolean;
 }
 export type OrderStatus =
-  'pending' | 'confirmed' | 'preparing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
+  | 'pending'
+  | 'confirmed'
+  | 'preparing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled'
+  | 'returned';
 export interface Order {
   id: string;
   orderNumber: string;

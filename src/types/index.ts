@@ -59,4 +59,10 @@ export interface ProductReview {
   verifiedPurchase: boolean;
 }
 export type SortOption =
-  'recommended' | 'price-asc' | 'price-desc' | 'newest' | 'discount' | 'name-asc' | 'name-desc';
+  | 'recommended'
+  | 'price-asc'
+  | 'price-desc'
+  | 'newest'
+  | 'discount'
+  | 'name-asc'
+  | 'name-desc';

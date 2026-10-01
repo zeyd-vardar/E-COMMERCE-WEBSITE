@@ -1,2 +1,3 @@
-export const Toast = () => `<div class="toast" id="toast" role="status" aria-live="polite">
+export const Toast =
+  () => `<div class="toast" id="toast" role="status" aria-live="polite">
 </div>`;

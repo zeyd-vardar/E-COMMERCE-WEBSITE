@@ -5,8 +5,16 @@ import { ComparisonBar } from '../components/ComparisonBar';
 import { NotifyStockDialog } from '../components/NotifyStockDialog';
 import { catalogProducts } from '../data/allProducts';
 import { categoryTree, getCategory } from '../data/categories';
-import { categoryHref, categoryPath, resolveCategoryPath } from '../utils/categoryRoutes';
-import { applyFilters, productsForCategory, sortCatalog } from '../utils/catalog';
+import {
+  categoryHref,
+  categoryPath,
+  resolveCategoryPath,
+} from '../utils/categoryRoutes';
+import {
+  applyFilters,
+  productsForCategory,
+  sortCatalog,
+} from '../utils/catalog';
 import { cartService } from '../services/cartService';
 import { favoritesService } from '../services/favoritesService';
 import { comparisonService } from '../services/comparisonService';
@@ -16,10 +24,13 @@ const BATCH = 12;
 let visible = BATCH;
 let activeFilters = new Map<string, Set<string>>();
 let observer: IntersectionObserver | undefined;
-const currentSlug = () => currentRoute().split('/').filter(Boolean).at(-1) ?? 'all';
-const currentSegments = () => currentRoute().split('/').filter(Boolean).slice(1);
+const currentSlug = () =>
+  currentRoute().split('/').filter(Boolean).at(-1) ?? 'all';
+const currentSegments = () =>
+  currentRoute().split('/').filter(Boolean).slice(1);
 const currentSort = (): SortOption =>
-  (new URLSearchParams(location.search).get('sort') as SortOption) ?? 'recommended';
+  (new URLSearchParams(location.search).get('sort') as SortOption) ??
+  'recommended';
 const listFor = (language: Language) =>
   sortCatalog(
     applyFilters(
@@ -168,26 +179,32 @@ export const initCategoryPage = (
   toast: (message: string) => void,
   navigate: (path: string) => void,
 ) => {
-  document.querySelector<HTMLSelectElement>('.sort-select')!.value = currentSort();
+  document.querySelector<HTMLSelectElement>('.sort-select')!.value =
+    currentSort();
   const refresh = () => {
     observer?.disconnect();
     rerender();
   };
   document.querySelectorAll<HTMLElement>('.catalog-card').forEach((card) => {
     const id = card.dataset.productId!;
-    card.querySelector('.catalog-favorite')?.addEventListener('click', (event) => {
-      const active = favoritesService.toggle(id);
-      (event.currentTarget as HTMLElement).classList.toggle('is-active', active);
-      toast(
-        active
-          ? language === 'tr'
-            ? 'Favorilere eklendi.'
-            : 'Added to favorites.'
-          : language === 'tr'
-            ? 'Favorilerden çıkarıldı.'
-            : 'Removed from favorites.',
-      );
-    });
+    card
+      .querySelector('.catalog-favorite')
+      ?.addEventListener('click', (event) => {
+        const active = favoritesService.toggle(id);
+        (event.currentTarget as HTMLElement).classList.toggle(
+          'is-active',
+          active,
+        );
+        toast(
+          active
+            ? language === 'tr'
+              ? 'Favorilere eklendi.'
+              : 'Added to favorites.'
+            : language === 'tr'
+              ? 'Favorilerden çıkarıldı.'
+              : 'Removed from favorites.',
+        );
+      });
     card.querySelector('.compare-input')?.addEventListener('change', () => {
       comparisonService.toggle(id);
       refresh();
@@ -201,7 +218,9 @@ export const initCategoryPage = (
       }
       toast(language === 'tr' ? 'Ürün sepete eklendi.' : 'Added to cart.');
     });
-    card.querySelector('.notify-btn')?.addEventListener('click', () => openNotify());
+    card
+      .querySelector('.notify-btn')
+      ?.addEventListener('click', () => openNotify());
   });
   const drawer = document.querySelector<HTMLElement>('.filter-drawer');
   const overlay = document.querySelector<HTMLElement>('.filter-overlay');
@@ -211,20 +230,28 @@ export const initCategoryPage = (
     drawer?.setAttribute('aria-hidden', String(!open));
     if (open) drawer?.querySelector<HTMLElement>('button')?.focus();
   };
-  document.querySelector('.filter-trigger')?.addEventListener('click', () => setDrawer(true));
-  document.querySelector('.filter-close')?.addEventListener('click', () => setDrawer(false));
+  document
+    .querySelector('.filter-trigger')
+    ?.addEventListener('click', () => setDrawer(true));
+  document
+    .querySelector('.filter-close')
+    ?.addEventListener('click', () => setDrawer(false));
   overlay?.addEventListener('click', () => setDrawer(false));
   document.querySelector('.filter-apply')?.addEventListener('click', () => {
     const next = new Map<string, Set<string>>();
-    drawer?.querySelectorAll<HTMLInputElement>('[data-filter-key]:checked').forEach((input) => {
-      const key = input.dataset.filterKey!;
-      if (!next.has(key)) next.set(key, new Set());
-      next.get(key)!.add(input.value);
-    });
-    drawer?.querySelectorAll<HTMLInputElement>('[data-price-filter]').forEach((input) => {
-      const value = input.value.trim();
-      if (value) next.set(input.dataset.priceFilter!, new Set([value]));
-    });
+    drawer
+      ?.querySelectorAll<HTMLInputElement>('[data-filter-key]:checked')
+      .forEach((input) => {
+        const key = input.dataset.filterKey!;
+        if (!next.has(key)) next.set(key, new Set());
+        next.get(key)!.add(input.value);
+      });
+    drawer
+      ?.querySelectorAll<HTMLInputElement>('[data-price-filter]')
+      .forEach((input) => {
+        const value = input.value.trim();
+        if (value) next.set(input.dataset.priceFilter!, new Set([value]));
+      });
     activeFilters = next;
     visible = BATCH;
     refresh();
@@ -236,30 +263,38 @@ export const initCategoryPage = (
   };
   document.querySelector('.filter-clear')?.addEventListener('click', clear);
   document.querySelector('.empty-clear')?.addEventListener('click', clear);
-  document.querySelectorAll<HTMLElement>('[data-remove-filter]').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      const [key, value] = btn.dataset.removeFilter!.split(':');
-      activeFilters.get(key)?.delete(value);
+  document
+    .querySelectorAll<HTMLElement>('[data-remove-filter]')
+    .forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const [key, value] = btn.dataset.removeFilter!.split(':');
+        activeFilters.get(key)?.delete(value);
+        visible = BATCH;
+        refresh();
+      }),
+    );
+  document
+    .querySelector<HTMLSelectElement>('.sort-select')
+    ?.addEventListener('change', (event) => {
+      const value = (event.target as HTMLSelectElement).value;
+      const url = new URL(location.href);
+      value === 'recommended'
+        ? url.searchParams.delete('sort')
+        : url.searchParams.set('sort', value);
+      history.replaceState({}, '', url);
       visible = BATCH;
       refresh();
-    }),
-  );
-  document.querySelector<HTMLSelectElement>('.sort-select')?.addEventListener('change', (event) => {
-    const value = (event.target as HTMLSelectElement).value;
-    const url = new URL(location.href);
-    value === 'recommended' ? url.searchParams.delete('sort') : url.searchParams.set('sort', value);
-    history.replaceState({}, '', url);
-    visible = BATCH;
-    refresh();
-  });
+    });
   document.querySelector('.comparison-clear')?.addEventListener('click', () => {
     comparisonService.clear();
     refresh();
   });
-  document.querySelector('[data-compare-route]')?.addEventListener('click', (event) => {
-    event.preventDefault();
-    navigate('/compare');
-  });
+  document
+    .querySelector('[data-compare-route]')
+    ?.addEventListener('click', (event) => {
+      event.preventDefault();
+      navigate('/compare');
+    });
   const sentinel = document.querySelector('.infinite-sentinel');
   if (sentinel && visible < listFor(language).length) {
     observer = new IntersectionObserver(
@@ -283,7 +318,9 @@ export const initCategoryPage = (
     dialog?.close();
     modalOverlay?.classList.remove('is-open');
   };
-  document.querySelector('.notify-close')?.addEventListener('click', closeNotify);
+  document
+    .querySelector('.notify-close')
+    ?.addEventListener('click', closeNotify);
   modalOverlay?.addEventListener('click', closeNotify);
   dialog?.querySelector('form')?.addEventListener('submit', (event) => {
     event.preventDefault();

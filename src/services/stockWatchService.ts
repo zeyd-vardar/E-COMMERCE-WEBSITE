@@ -10,7 +10,12 @@ export const stockWatchService = {
     if (!items.some((item) => item.productId === productId)) {
       save([
         ...items,
-        { productId, desiredColor: color, desiredSize: size, createdAt: new Date().toISOString() },
+        {
+          productId,
+          desiredColor: color,
+          desiredSize: size,
+          createdAt: new Date().toISOString(),
+        },
       ]);
     }
   },

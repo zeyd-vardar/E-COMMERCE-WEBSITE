@@ -19,7 +19,9 @@ export const Footer = (language: Language) =>
 <div class="footer-columns">
 ${footerSections
   .map(
-    (section) => `<nav class="footer-section" aria-label="${section.title[language]}">
+    (
+      section,
+    ) => `<nav class="footer-section" aria-label="${section.title[language]}">
 <button class="footer-section-toggle" aria-expanded="true">
 <span>
 ${section.title[language]}

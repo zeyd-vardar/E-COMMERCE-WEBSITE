@@ -12,14 +12,21 @@ const read = (): CartLine[] => {
   const stored = storage.getJson<unknown>(KEY, []);
   if (Array.isArray(stored)) {
     return stored.filter((line): line is CartLine =>
-      Boolean(line && typeof line === 'object' && 'productId' in line && 'quantity' in line),
+      Boolean(
+        line &&
+        typeof line === 'object' &&
+        'productId' in line &&
+        'quantity' in line,
+      ),
     );
   }
   if (stored && typeof stored === 'object') {
-    return Object.entries(stored as LegacyCart).map(([productId, quantity]) => ({
-      productId,
-      quantity,
-    }));
+    return Object.entries(stored as LegacyCart).map(
+      ([productId, quantity]) => ({
+        productId,
+        quantity,
+      }),
+    );
   }
   return [];
 };
@@ -30,7 +37,9 @@ export const cartService = {
     const lines = read();
     const existing = lines.find(
       (line) =>
-        line.productId === productId && line.color === variant.color && line.size === variant.size,
+        line.productId === productId &&
+        line.color === variant.color &&
+        line.size === variant.size,
     );
     if (existing) existing.quantity += 1;
     else lines.push({ productId, ...variant, quantity: 1 });
@@ -50,6 +59,10 @@ export const cartService = {
     if (!lines[index]) return;
     lines.splice(index, 1);
     save(lines);
+    this.emit();
+  },
+  clear() {
+    save([]);
     this.emit();
   },
   prune(validProductIds: Set<string>) {

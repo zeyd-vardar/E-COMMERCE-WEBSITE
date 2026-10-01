@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "api:dev": "tsx watch server/src/index.ts",
-    "api:start": "tsx server/src/index.ts",
+    "api:dev": "tsx watch server/src/server.ts",
+    "api:start": "tsx server/src/server.ts",
     "api:check": "tsc -p server/tsconfig.json --noEmit",
     "preview": "vite preview",
     "format": "prettier --write \"{src,server}/**/*.{ts,css}\" \"*.{html,json,yml}\" \"docs/**/*.md\"",

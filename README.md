@@ -1,6 +1,6 @@
 # Aurea Storefront — Portföy Demo
 
-Bu repo, statik vitrin arayüzünü ve yayınlanmaya hazır PostgreSQL destekli REST API’yi birlikte içerir. Arayüz demo modunda `localStorage` kullanmaya devam eder; böylece backend kapalıyken de portföy gösterimi sorunsuz çalışır.
+Bu repo, vitrin arayüzünü ve PostgreSQL destekli katmanlı REST API’yi birlikte içerir. Kullanıcı olayları, frontend servisleri, API modülleri, middleware, route, controller, service ve repository katmanları birbirinden ayrılmıştır. JWT bulunmadığında arayüz demo amaçlı yerel veri davranışını korur.
 
 ## Yerelde çalıştırma
 
@@ -20,6 +20,8 @@ Sağlık kontrolü: `GET /api/v1/health`
 
 Tüm veri modeli [database/migrations/001_initial_schema.sql](database/migrations/001_initial_schema.sql) içindedir. Örnek ürünler [database/seeds/001_demo_catalog.sql](database/seeds/001_demo_catalog.sql) ile gelir.
 Uçların kısa sözleşmesi [docs/api.md](docs/api.md) dosyasındadır.
+Katmanlı akışın ayrıntıları
+[docs/architecture.md](docs/architecture.md) dosyasındadır.
 
 ## Yayınlama notu
 

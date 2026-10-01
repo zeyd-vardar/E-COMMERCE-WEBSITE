@@ -5,11 +5,16 @@ import { createPlaceholderSvg } from '../utils/placeholderImage';
 export const PRODUCTS_PER_LEAF_CATEGORY = 10;
 type Leaf = { node: CategoryNode; path: CategoryNode[] };
 const productRoots = new Set(['women', 'men', 'kids', 'accessories']);
-export const getProductLeafCategories = (nodes = categoryTree, path: CategoryNode[] = []): Leaf[] =>
+export const getProductLeafCategories = (
+  nodes = categoryTree,
+  path: CategoryNode[] = [],
+): Leaf[] =>
   nodes.flatMap((node) => {
     const next = [...path, node];
     if (!node.children?.length)
-      return path.length && productRoots.has(path[0].id) ? [{ node, path: next }] : [];
+      return path.length && productRoots.has(path[0].id)
+        ? [{ node, path: next }]
+        : [];
     return getProductLeafCategories(node.children, next);
   });
 const slugify = (value: string) =>
@@ -22,15 +27,37 @@ const slugify = (value: string) =>
     .replace(/(^-|-$)/g, '');
 const typeOf = (path: string[]) =>
   path.some((x) =>
-    ['shoes', 'sneakers', 'boots', 'sandals', 'slippers', 'loafers', 'heels'].includes(x),
+    [
+      'shoes',
+      'sneakers',
+      'boots',
+      'sandals',
+      'slippers',
+      'loafers',
+      'heels',
+    ].includes(x),
   )
     ? 'shoes'
-    : path.some((x) => ['watches', 'women-watches', 'men-watches', 'smart-watches'].includes(x))
+    : path.some((x) =>
+          ['watches', 'women-watches', 'men-watches', 'smart-watches'].includes(
+            x,
+          ),
+        )
       ? 'watch'
-      : path.some((x) => ['jewelry', 'necklaces', 'bracelets', 'earrings', 'rings'].includes(x))
+      : path.some((x) =>
+            ['jewelry', 'necklaces', 'bracelets', 'earrings', 'rings'].includes(
+              x,
+            ),
+          )
         ? 'jewelry'
         : path.some((x) =>
-              ['bags', 'shoulder-bags', 'handbags', 'backpacks', 'wallets'].includes(x),
+              [
+                'bags',
+                'shoulder-bags',
+                'handbags',
+                'backpacks',
+                'wallets',
+              ].includes(x),
             )
           ? 'bag'
           : path[0] === 'kids'
@@ -56,7 +83,9 @@ export const generateDemoCatalog = (): CatalogProduct[] =>
         type = typeOf(routePath),
         [min, max] = ranges[type];
       const original =
-          Math.round((min + (max - min) * (offset / PRODUCTS_PER_LEAF_CATEGORY)) / 10) * 10,
+          Math.round(
+            (min + (max - min) * (offset / PRODUCTS_PER_LEAF_CATEGORY)) / 10,
+          ) * 10,
         discount = discounts[offset];
       const context = path.length > 3 ? path.at(-2)!.name : path[0].name;
       const name = {
@@ -72,7 +101,11 @@ export const generateDemoCatalog = (): CatalogProduct[] =>
             ? { Materyal: 'Paslanmaz Çelik', Uzunluk: '45 cm' }
             : type === 'shoes'
               ? { Materyal: 'Deri', Taban: 'Kauçuk', Kalıp: 'Normal' }
-              : { Materyal: 'Pamuk Karışımlı', Kalıp: 'Regular', Sezon: '2026' };
+              : {
+                  Materyal: 'Pamuk Karışımlı',
+                  Kalıp: 'Regular',
+                  Sezon: '2026',
+                };
       return {
         id: `item-${pathKey}-${String(index).padStart(2, '0')}`,
         slug: slugify(`${pathKey}-${index}`),
@@ -82,7 +115,9 @@ export const generateDemoCatalog = (): CatalogProduct[] =>
         categoryPath: routePath,
         brand: brands[(leafIndex + offset) % brands.length],
         sku: `ST-${leafIndex + 1}-${index}`,
-        price: discount ? Math.round((original * (1 - discount / 100)) / 10) * 10 : original,
+        price: discount
+          ? Math.round((original * (1 - discount / 100)) / 10) * 10
+          : original,
         originalPrice: discount ? original : undefined,
         images: [
           createPlaceholderSvg(name.tr, leafIndex + offset),
@@ -90,7 +125,10 @@ export const generateDemoCatalog = (): CatalogProduct[] =>
           createPlaceholderSvg(`${name.tr} · GÖRÜNÜM`, leafIndex + offset + 2),
         ],
         imagePosition: '50% 50%',
-        colors: [offset % 2 ? 'Siyah' : 'Ekru', offset % 3 ? 'Lacivert' : 'Kum'],
+        colors: [
+          offset % 2 ? 'Siyah' : 'Ekru',
+          offset % 3 ? 'Lacivert' : 'Kum',
+        ],
         sizes: noSize
           ? []
           : type === 'shoes'
@@ -102,7 +140,8 @@ export const generateDemoCatalog = (): CatalogProduct[] =>
         isNew: offset % 4 === 0,
         isBestSeller: offset % 5 === 0,
         isOutlet: (leafIndex + offset) % 7 === 0,
-        createdAt: Date.UTC(2026, 7, 17) - leafIndex * 86400000 - offset * 3600000,
+        createdAt:
+          Date.UTC(2026, 7, 17) - leafIndex * 86400000 - offset * 3600000,
         description: {
           tr: `${node.name.tr} kategorisinin seçili koleksiyon parçası.`,
           en: `A selected piece from the ${node.name.en} collection.`,
@@ -118,6 +157,7 @@ export const validateDemoCatalogCoverage = () =>
   getProductLeafCategories().every(
     ({ path }) =>
       generatedProducts.filter(
-        (product) => product.categoryPath?.join('/') === path.map((x) => x.slug).join('/'),
+        (product) =>
+          product.categoryPath?.join('/') === path.map((x) => x.slug).join('/'),
       ).length >= PRODUCTS_PER_LEAF_CATEGORY,
   );

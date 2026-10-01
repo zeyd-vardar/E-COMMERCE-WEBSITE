@@ -127,7 +127,10 @@ select:focus-visible {
   height: 100%;
   padding: 0 var(--pad);
   display: grid;
-  grid-template-columns: 44px minmax(140px, 1fr) minmax(240px, 450px) minmax(480px, 1fr);
+  grid-template-columns: 44px minmax(140px, 1fr) minmax(240px, 450px) minmax(
+      480px,
+      1fr
+    );
   align-items: center;
   gap: clamp(12px, 2vw, 34px);
 }
@@ -642,7 +645,11 @@ body.home-view .sidebar-actions a {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(18, 14, 10, 0.46), rgba(18, 14, 10, 0.05) 58%);
+  background: linear-gradient(
+    90deg,
+    rgba(18, 14, 10, 0.46),
+    rgba(18, 14, 10, 0.05) 58%
+  );
 }
 .gender-campaign-men {
   background-image: url('/images/store-men-campaign.png');
@@ -652,7 +659,11 @@ body.home-view .sidebar-actions a {
   background-image: url('/images/store-women-campaign.png');
 }
 .gender-campaign-women::before {
-  background: linear-gradient(270deg, rgba(18, 14, 10, 0.46), rgba(18, 14, 10, 0.05) 58%);
+  background: linear-gradient(
+    270deg,
+    rgba(18, 14, 10, 0.46),
+    rgba(18, 14, 10, 0.05) 58%
+  );
 }
 .gender-campaign-copy {
   position: relative;
@@ -992,7 +1003,11 @@ body.home-view .sidebar-actions a {
   }
   .gender-campaign::before,
   .gender-campaign-women::before {
-    background: linear-gradient(90deg, rgba(18, 14, 10, 0.58), rgba(18, 14, 10, 0.08) 78%);
+    background: linear-gradient(
+      90deg,
+      rgba(18, 14, 10, 0.58),
+      rgba(18, 14, 10, 0.08) 78%
+    );
   }
   .gender-campaign-copy {
     width: min(88%, 440px);

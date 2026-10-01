@@ -10,12 +10,18 @@ import { stockWatchService } from '../services/stockWatchService';
 import { userService } from '../services/userService';
 import type { Currency, Language } from '../types';
 import { currentRoute } from '../utils/router';
+import { bindAccountNavigationClickEvents } from '../features/account/events/accountNavigationClick.events';
+import { bindAddressEvents } from '../features/account/events/address.events';
+import { loadAccountAddresses } from '../features/account/services/addressApplicationService';
+import { loadAccountOrders } from '../features/account/services/orderApplicationService';
+import { bindSignOutEvent } from '../features/account/events/session.events';
 const route = () => currentRoute();
 const labels = {
   tr: {
     title: 'Profilim',
     hello: 'Merhaba',
-    intro: 'Hesabınızı, siparişlerinizi ve tercihlerinizi buradan yönetebilirsiniz.',
+    intro:
+      'Hesabınızı, siparişlerinizi ve tercihlerinizi buradan yönetebilirsiniz.',
     cart: 'Sepetim',
     addresses: 'Adreslerim',
     orders: 'Geçmiş Siparişlerim',
@@ -98,7 +104,10 @@ const dashboardItems = (language: Language) => {
     {
       id: 'profile',
       title: l.profile,
-      desc: language === 'tr' ? 'Hesap bilgilerini yönet' : 'Manage account details',
+      desc:
+        language === 'tr'
+          ? 'Hesap bilgilerini yönet'
+          : 'Manage account details',
       icon: 'user' as IconName,
       path: '/account/profile',
     },
@@ -132,7 +141,10 @@ ${formatCurrency(product.price * quantity, currency, language)}
 </strong>
 </span>`;
 const TotalPrice = (
-  lines: { line: { quantity: number }; product: (typeof catalogProducts)[number] | undefined }[],
+  lines: {
+    line: { quantity: number };
+    product: (typeof catalogProducts)[number] | undefined;
+  }[],
   language: Language,
   currency: Currency,
 ) => {
@@ -449,13 +461,17 @@ ${language === 'tr' ? 'ÖDEMEYE GEÇ' : 'PROCEED TO CHECKOUT'}
   );
 };
 const Checkout = (language: Language, currency: Currency) => {
-  const address = addressService.all().find((item) => item.isDefault) ?? addressService.all()[0],
+  const address =
+      addressService.all().find((item) => item.isDefault) ??
+      addressService.all()[0],
     user = userService.get(),
     lines = cartService
       .all()
       .map((line) => ({
         line,
-        product: catalogProducts.find((product) => product.id === line.productId),
+        product: catalogProducts.find(
+          (product) => product.id === line.productId,
+        ),
       }))
       .filter((item) => item.product);
   if (!lines.length)
@@ -480,6 +496,7 @@ ${language === 'tr' ? 'Ödeme' : 'Checkout'}
 </h1>
 </div>
 <form class="checkout-form">
+<input type="hidden" name="shippingAddressId" value="${address?.id ?? ''}">
 <div class="checkout-fields">
 <section>
 <h2>1. ${language === 'tr' ? 'Teslimat Bilgileri' : 'Delivery Details'}
@@ -805,89 +822,80 @@ export const initAccountPage = (
   toast: (message: string) => void,
   navigate: (path: string) => void,
 ) => {
-  document.querySelectorAll<HTMLElement>('[data-account-route]').forEach((link) =>
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      navigate(link.dataset.accountRoute!);
-    }),
-  );
+  bindAccountNavigationClickEvents({
+    navigate,
+    beforeNavigate: async (path) => {
+      if (path === '/account/addresses') {
+        await loadAccountAddresses();
+      }
+      if (path === '/account/orders' || path === '/tracking') {
+        await loadAccountOrders();
+      }
+    },
+    onError: (error) =>
+      toast(
+        error instanceof Error
+          ? error.message
+          : language === 'tr'
+            ? 'Hesap verileri yüklenemedi.'
+            : 'Account data could not be loaded.',
+      ),
+  });
+  bindSignOutEvent(language, toast);
+  bindAddressEvents({ language, rerender, toast });
   document
-    .querySelector('.signout-btn')
-    ?.addEventListener('click', () =>
-      toast(language === 'tr' ? 'Oturumunuz açık bırakıldı.' : 'Your session remains active.'),
+    .querySelectorAll<HTMLElement>('[data-remove-favorite]')
+    .forEach((btn) =>
+      btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        favoritesService.remove(btn.dataset.removeFavorite!);
+        rerender();
+      }),
     );
-  document.querySelector('.new-address-trigger')?.addEventListener('click', () => {
-    const form = document.querySelector<HTMLElement>('.address-form');
-    if (form) form.hidden = false;
-  });
-  document.querySelector<HTMLFormElement>('.address-form')?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget as HTMLFormElement);
-    addressService.add({
-      id: `address-${Date.now()}`,
-      title: String(form.get('title')),
-      firstName: userService.get().firstName,
-      lastName: userService.get().lastName,
-      phone: String(form.get('phone')),
-      addressLine: String(form.get('address')),
-      city: String(form.get('city')),
-      district: String(form.get('district')),
-      country: 'Türkiye',
-      isDefault: false,
-    });
-    toast(language === 'tr' ? 'Adresiniz kaydedildi.' : 'Address saved.');
-    rerender();
-  });
-  document.querySelectorAll<HTMLElement>('[data-delete-address]').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      addressService.remove(btn.dataset.deleteAddress!);
-      rerender();
-    }),
-  );
-  document.querySelectorAll<HTMLElement>('[data-default-address]').forEach((btn) =>
-    btn.addEventListener('click', () => {
-      addressService.makeDefault(btn.dataset.defaultAddress!);
-      rerender();
-    }),
-  );
-  document.querySelectorAll<HTMLElement>('[data-remove-favorite]').forEach((btn) =>
-    btn.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      favoritesService.remove(btn.dataset.removeFavorite!);
-      rerender();
-    }),
-  );
   document.querySelectorAll<HTMLElement>('[data-remove-stock]').forEach((btn) =>
     btn.addEventListener('click', () => {
       stockWatchService.remove(btn.dataset.removeStock!);
       rerender();
     }),
   );
-  document.querySelector<HTMLFormElement>('.profile-form')?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget as HTMLFormElement);
-    userService.save({
-      id: 'store-user',
-      firstName: String(form.get('firstName')),
-      lastName: String(form.get('lastName')),
-      email: String(form.get('email')),
-      phone: String(form.get('phone')),
-      birthDate: String(form.get('birthDate')),
+  document
+    .querySelector<HTMLFormElement>('.profile-form')
+    ?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget as HTMLFormElement);
+      userService.save({
+        id: 'store-user',
+        firstName: String(form.get('firstName')),
+        lastName: String(form.get('lastName')),
+        email: String(form.get('email')),
+        phone: String(form.get('phone')),
+        birthDate: String(form.get('birthDate')),
+      });
+      toast(
+        language === 'tr'
+          ? 'Bilgileriniz kaydedildi.'
+          : 'Your information was saved.',
+      );
     });
-    toast(language === 'tr' ? 'Bilgileriniz kaydedildi.' : 'Your information was saved.');
-  });
-  document.querySelector('.tracking-box form')?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    toast(language === 'tr' ? 'Sipariş durumu güncellendi.' : 'Order status updated.');
-  });
+  document
+    .querySelector('.tracking-box form')
+    ?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      toast(
+        language === 'tr'
+          ? 'Sipariş durumu güncellendi.'
+          : 'Order status updated.',
+      );
+    });
   document
     .querySelectorAll('[data-demo-action]')
     .forEach((btn) =>
       btn.addEventListener('click', () =>
         toast(
-          language === 'tr' ? 'Sipariş detayları görüntüleniyor.' : 'Order details are displayed.',
+          language === 'tr'
+            ? 'Sipariş detayları görüntüleniyor.'
+            : 'Order details are displayed.',
         ),
       ),
     );

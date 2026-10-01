@@ -1,7 +1,9 @@
 import type { CatalogProduct, Language, SortOption } from '../types';
 import { getCategoryPath } from '../data/categories';
 export const discountOf = (p: CatalogProduct) =>
-  p.originalPrice ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
+  p.originalPrice
+    ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)
+    : 0;
 export const productsForCategory = (
   items: CatalogProduct[],
   category: string,
@@ -9,7 +11,8 @@ export const productsForCategory = (
 ) => {
   const path = routePath ?? getCategoryPath(category).map((node) => node.slug);
   const [root, leaf] = path;
-  const categoryItems = root === 'sale' ? items : items.filter((product) => !product.saleOnly);
+  const categoryItems =
+    root === 'sale' ? items : items.filter((product) => !product.saleOnly);
   if (root === 'all')
     return categoryItems.filter((product) =>
       leaf === 'women' || leaf === 'men' || leaf === 'kids'
@@ -58,13 +61,19 @@ export const productsForCategory = (
     );
   return categoryItems.filter((product) => {
     if (product.categoryPath)
-      return path.every((segment, index) => product.categoryPath?.[index] === segment);
+      return path.every(
+        (segment, index) => product.categoryPath?.[index] === segment,
+      );
     if (path.length === 1) return product.categoryId === root;
-    if (path.length === 2) return product.categoryId === root && product.subcategoryId === leaf;
+    if (path.length === 2)
+      return product.categoryId === root && product.subcategoryId === leaf;
     return false;
   });
 };
-export const applyFilters = (items: CatalogProduct[], filters: Map<string, Set<string>>) =>
+export const applyFilters = (
+  items: CatalogProduct[],
+  filters: Map<string, Set<string>>,
+) =>
   items.filter((p) =>
     [...filters].every(
       ([key, values]) =>
@@ -75,7 +84,10 @@ export const applyFilters = (items: CatalogProduct[], filters: Map<string, Set<s
               p.subcategoryId === value ||
               Boolean(p.categoryPath?.includes(value))
             : key === 'clothingCategory'
-              ? Boolean(p.categoryPath?.includes('clothing') && p.categoryPath.includes(value))
+              ? Boolean(
+                  p.categoryPath?.includes('clothing') &&
+                  p.categoryPath.includes(value),
+                )
               : key === 'brand'
                 ? p.brand === value
                 : key === 'color'
@@ -96,7 +108,11 @@ export const applyFilters = (items: CatalogProduct[], filters: Map<string, Set<s
         ),
     ),
   );
-export const sortCatalog = (items: CatalogProduct[], sort: SortOption, language: Language) =>
+export const sortCatalog = (
+  items: CatalogProduct[],
+  sort: SortOption,
+  language: Language,
+) =>
   [...items].sort((a, b) =>
     sort === 'price-asc'
       ? a.price - b.price
@@ -112,7 +128,10 @@ export const sortCatalog = (items: CatalogProduct[], sort: SortOption, language:
                 ? b.name[language].localeCompare(a.name[language], language)
                 : Number(b.isBestSeller) - Number(a.isBestSeller),
   );
-export const getSimilarProducts = (product: CatalogProduct, items: CatalogProduct[]) =>
+export const getSimilarProducts = (
+  product: CatalogProduct,
+  items: CatalogProduct[],
+) =>
   items
     .filter((p) => p.id !== product.id)
     .map((p) => ({

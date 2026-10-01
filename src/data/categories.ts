@@ -1,7 +1,12 @@
 import type { Category, CategoryNode, LocalizedText } from '../types';
 
 const localized = (tr: string, en: string): LocalizedText => ({ tr, en });
-const leaf = (id: string, slug: string, tr: string, en: string): CategoryNode => ({
+const leaf = (
+  id: string,
+  slug: string,
+  tr: string,
+  en: string,
+): CategoryNode => ({
   id,
   slug,
   name: localized(tr, en),
@@ -63,7 +68,12 @@ const womenAccessories = [
   scopedLeaf('women-accessories', 'belts', 'Kemer', 'Belts'),
   scopedLeaf('women-accessories', 'hats', 'Şapka & Bere', 'Hats'),
   scopedLeaf('women-accessories', 'scarves', 'Şal & Fular', 'Scarves'),
-  scopedLeaf('women-accessories', 'hair-accessories', 'Saç Aksesuarları', 'Hair Accessories'),
+  scopedLeaf(
+    'women-accessories',
+    'hair-accessories',
+    'Saç Aksesuarları',
+    'Hair Accessories',
+  ),
 ];
 
 const menClothing = [
@@ -138,7 +148,9 @@ const kidsGroups = [
     'boys',
     'Erkek Çocuk',
     'Boys',
-    childClothing('kids-boys', [scopedLeaf('kids-boys', 'shirts', 'Gömlek', 'Shirts')]),
+    childClothing('kids-boys', [
+      scopedLeaf('kids-boys', 'shirts', 'Gömlek', 'Shirts'),
+    ]),
   ),
   group('kids-baby-girls', 'baby-girls', 'Bebek Kız', 'Baby Girls', [
     scopedLeaf('kids-baby-girls', 'bodysuits', 'Body', 'Bodysuits'),
@@ -176,16 +188,41 @@ const accessoriesGroups = [
   group('accessories-bags', 'bags', 'Çanta', 'Bags', [
     scopedLeaf('accessories-bags', 'women-bags', 'Kadın Çanta', 'Women’s Bags'),
     scopedLeaf('accessories-bags', 'men-bags', 'Erkek Çanta', 'Men’s Bags'),
-    scopedLeaf('accessories-bags', 'shoulder-bags', 'Omuz Çantası', 'Shoulder Bags'),
+    scopedLeaf(
+      'accessories-bags',
+      'shoulder-bags',
+      'Omuz Çantası',
+      'Shoulder Bags',
+    ),
     scopedLeaf('accessories-bags', 'backpacks', 'Sırt Çantası', 'Backpacks'),
-    scopedLeaf('accessories-bags', 'crossbody-bags', 'Çapraz Çanta', 'Crossbody Bags'),
+    scopedLeaf(
+      'accessories-bags',
+      'crossbody-bags',
+      'Çapraz Çanta',
+      'Crossbody Bags',
+    ),
     scopedLeaf('accessories-bags', 'handbags', 'El Çantası', 'Handbags'),
     scopedLeaf('accessories-bags', 'wallets', 'Cüzdan', 'Wallets'),
   ]),
   group('accessories-watches', 'watches', 'Saat', 'Watches', [
-    scopedLeaf('accessories-watches', 'women-watches', 'Kadın Saatleri', 'Women’s Watches'),
-    scopedLeaf('accessories-watches', 'men-watches', 'Erkek Saatleri', 'Men’s Watches'),
-    scopedLeaf('accessories-watches', 'smart-watches', 'Akıllı Saatler', 'Smart Watches'),
+    scopedLeaf(
+      'accessories-watches',
+      'women-watches',
+      'Kadın Saatleri',
+      'Women’s Watches',
+    ),
+    scopedLeaf(
+      'accessories-watches',
+      'men-watches',
+      'Erkek Saatleri',
+      'Men’s Watches',
+    ),
+    scopedLeaf(
+      'accessories-watches',
+      'smart-watches',
+      'Akıllı Saatler',
+      'Smart Watches',
+    ),
   ]),
   group('accessories-jewelry', 'jewelry', 'Takı', 'Jewelry', [
     scopedLeaf('accessories-jewelry', 'necklaces', 'Kolye', 'Necklaces'),
@@ -200,7 +237,12 @@ const accessoriesGroups = [
       'Kadın Güneş Gözlüğü',
       'Women’s Sunglasses',
     ),
-    scopedLeaf('accessories-eyewear', 'men-sunglasses', 'Erkek Güneş Gözlüğü', 'Men’s Sunglasses'),
+    scopedLeaf(
+      'accessories-eyewear',
+      'men-sunglasses',
+      'Erkek Güneş Gözlüğü',
+      'Men’s Sunglasses',
+    ),
   ]),
   group('accessories-other', 'other', 'Diğer', 'Other', [
     scopedLeaf('accessories-other', 'belts', 'Kemer', 'Belts'),
@@ -250,16 +292,34 @@ export const categoryTree: CategoryNode[] = [
     group('men-clothing', 'clothing', 'Giyim', 'Clothing', menClothing),
     group('men-shoes', 'shoes', 'Ayakkabı', 'Shoes', menShoes),
     group('men-bags', 'bags', 'Çanta', 'Bags', menBags),
-    group('men-accessories', 'accessories', 'Aksesuar', 'Accessories', menAccessories),
+    group(
+      'men-accessories',
+      'accessories',
+      'Aksesuar',
+      'Accessories',
+      menAccessories,
+    ),
   ]),
   group('women', 'women', 'Kadın', 'Women', [
     group('women-clothing', 'clothing', 'Giyim', 'Clothing', womenClothing),
     group('women-shoes', 'shoes', 'Ayakkabı', 'Shoes', womenShoes),
     group('women-bags', 'bags', 'Çanta', 'Bags', womenBags),
-    group('women-accessories', 'accessories', 'Aksesuar', 'Accessories', womenAccessories),
+    group(
+      'women-accessories',
+      'accessories',
+      'Aksesuar',
+      'Accessories',
+      womenAccessories,
+    ),
   ]),
   group('kids', 'kids', 'Çocuk ve Bebek', 'Kids & Baby', kidsGroups),
-  group('accessories', 'accessories', 'Aksesuar', 'Accessories', accessoriesGroups),
+  group(
+    'accessories',
+    'accessories',
+    'Aksesuar',
+    'Accessories',
+    accessoriesGroups,
+  ),
   group('outlet', 'outlet', 'Outlet', 'Outlet', outletLeaves),
 ];
 
@@ -269,10 +329,13 @@ const flatten = (nodes: CategoryNode[], parentId?: string): Category[] =>
     ...flatten(node.children ?? [], node.id),
   ]);
 export const categories = flatten(categoryTree);
-export const topCategories = categories.filter((category) => !category.parentId);
+export const topCategories = categories.filter(
+  (category) => !category.parentId,
+);
 export const getCategory = (slugOrId: string) =>
-  categories.find((category) => category.id === slugOrId || category.slug === slugOrId) ??
-  categories[0];
+  categories.find(
+    (category) => category.id === slugOrId || category.slug === slugOrId,
+  ) ?? categories[0];
 export const findCategoryNode = (
   slugOrId: string,
   nodes = categoryTree,

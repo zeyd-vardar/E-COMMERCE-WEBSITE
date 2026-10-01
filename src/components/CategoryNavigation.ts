@@ -2,12 +2,19 @@ import { categoryTree } from '../data/categories';
 import { categoryHref, categoryPath } from '../utils/categoryRoutes';
 import type { CategoryNode, Language } from '../types';
 
-const routeAttributes = (segments: string[], kind: 'cta' | 'group' | 'leaf') => {
+const routeAttributes = (
+  segments: string[],
+  kind: 'cta' | 'group' | 'leaf',
+) => {
   const route = categoryPath(segments);
   return `class="mega-menu-link mega-menu-${kind}" href="${categoryHref(segments)}" data-category-link data-category-route="${route}" data-category-kind="${kind}"`;
 };
 
-const childLinks = (nodes: CategoryNode[], language: Language, path: string[]): string =>
+const childLinks = (
+  nodes: CategoryNode[],
+  language: Language,
+  path: string[],
+): string =>
   nodes
     .map((node) => {
       const segments = [...path, node.slug];
@@ -27,7 +34,11 @@ ${node.name[language]}
     })
     .join('');
 
-const column = (node: CategoryNode, parent: CategoryNode, language: Language) => {
+const column = (
+  node: CategoryNode,
+  parent: CategoryNode,
+  language: Language,
+) => {
   const segments = [parent.slug, node.slug];
   return `<div class="mega-column">
 <h3>

@@ -5,7 +5,9 @@ import { formatCurrency } from '../utils/currency';
 import type { Currency, Language } from '../types';
 export const ComparePage = (language: Language, currency: Currency) => {
   const selected = catalogProducts.filter((p) => comparisonService.has(p.id));
-  const attrs = [...new Set(selected.flatMap((p) => Object.keys(p.attributes)))];
+  const attrs = [
+    ...new Set(selected.flatMap((p) => Object.keys(p.attributes))),
+  ];
   return `${CategoryNavigation('', language)}
 <main class="compare-page">
 <a href="/category/all" data-category-route="all" class="back-link">← ${language === 'tr' ? 'Ürünlere dön' : 'Back to products'}
